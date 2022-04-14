@@ -1,32 +1,27 @@
 "use strict";
 
-import React, { Component } from "react";
-import { View, PanResponder } from "react-native";
+import React, { Component } from 'react'
+import { View, PanResponder } from 'react-native'
 
 export const swipeDirections = {
   SWIPE_UP: "SWIPE_UP",
   SWIPE_DOWN: "SWIPE_DOWN",
   SWIPE_LEFT: "SWIPE_LEFT",
   SWIPE_RIGHT: "SWIPE_RIGHT"
-};
+}
 
 const swipeConfig = {
   velocityThreshold: 0.3,
   directionalOffsetThreshold: 80,
   gestureIsClickThreshold: 5
-};
+}
 
-function isValidSwipe(
+const isValidSwipe = (
   velocity,
   velocityThreshold,
   directionalOffset,
   directionalOffsetThreshold
-) {
-  return (
-    Math.abs(velocity) > velocityThreshold &&
-    Math.abs(directionalOffset) < directionalOffsetThreshold
-  );
-}
+) => (Math.abs(velocity) > velocityThreshold && Math.abs(directionalOffset) < directionalOffsetThreshold)
 
 class GestureRecognizer extends Component {
   constructor(props, context) {
@@ -44,16 +39,16 @@ class GestureRecognizer extends Component {
   }
   
   componentDidUpdate(prevProps) {
-    if (this.props.config !== prevProps.config) {
-      this.swipeConfig = Object.assign(swipeConfig, this.props.config);
-    }
+	this.swipeConfig = Object.assign(swipeConfig, prevProps.config)
   }
   
   _handleShouldSetPanResponder(evt, gestureState) {
+	if (!(Math.abs(gestureState.dx) > Math.abs(gestureState.dy * 3) ) && !(Math.abs(gestureState.vx) > Math.abs(gestureState.vy * 3) )) return
+	
     return (
       evt.nativeEvent.touches.length === 1 &&
       !this._gestureIsClick(gestureState)
-    );
+    )
   }
 
   _gestureIsClick(gestureState) {
